@@ -1,4 +1,6 @@
-# Leveraging environmental, socio-economic and sexuality data to predict smoking status of teenagers. 
+# Leveraging environmental, socio-economic and sexuality data to predict smoking status of teenagers.
+
+Note: This project is created as part of IST 707- Applied Machine Learning class under Professor J. Introne during Spring 24 semester.
 
 ## Team Members 
 Shreyas Kashyap - (sskashya)
