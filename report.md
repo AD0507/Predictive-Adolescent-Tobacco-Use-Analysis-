@@ -54,22 +54,22 @@ Socio-economic:
 
 Initially, during the loading of raw data, the team discovered that the .csv file consisted of already encoded data. This made it extremely difficult to understand the data. This required recoding the encoded data from the NYTS codebook in order to understand what the data values for these questions were. Recoding of the raw data lead to the discovery of multiple columns having significant amounts of NULL values. 
 
-![Alt text](/images/null_value_count.png)
+![null_value_count](Images/null_value_count.png "null_value_count")
 ***Figure 3.1.1**: The red boxes highlight the significance of null values in the data.*
 
 The null values from the race columns (*'Mexican_Origin', 'Puerto_Rican', etc.*) represent '0' since these columns are in a one-hot encoded format. These columns were easy to impute. However, the red box highlighting columns from *'30-D_Freq' to '30-D_sale_refusal_by_age'* show that almost 90% of those columns were missing. These null values could be missing completely at random (MCAR) or missing not at random (MNAR). Upon further investigation, the team discovered that these values were missing not at random due to the survey being programmed a specific way. 
 
-![Alt text](/images/nyts_programming.png)
+![Alt text](Images/nyts_programming.png)
 ***Figure 3.1.2**: Image shows programming instructions on how the survey was conducted.*
 
 Figure 3.1.2 shows how the programming instructions created missing values in the data for these columns. Essentially, if survey participant made a selection in previous questions, indicating that they had consumed at least one of the tobacco products in the past 30 days, they were classified as a 'Smoker'. However, if they did not make a selection, they were classified as a current 'Non-smoker'. The survey than skips questions *'30-D_Freq' to '30-D_sale_refusal_by_age'* for those classified as 'Non-smokers'. With this information, the team was able to impute these null values with the appropriate values for each column. 
 
-![Alt text](/images/smoker_non-smoker_imputation.png)
+![Alt text](Images/smoker_non-smoker_imputation.png)
 ***Figure 3.1.3**: Image shows code written for imputation. 
 
 If all the columns in *'columns_to_check'* were null for that row, that participant was considered a non-smoker and the null values were imputed accordingly. This led to the discovery of a sever class imbalance being present in the data set. About 90% of the dataset were 'non-smokers' and the rest were 'smokers'. This imbalance can be seen in **Figure 3.1.4** below. 
 
-![Alt text](/images/class_imbalance.png)
+![Alt text](Images/class_imbalance.png)
 ***Figure 3.1.4**: Image shows the class imbalance within the dataset between the two smoking_status classes. 
 
 Further imputation of other columns, exploratory data analysis and pre-processing measures taken for survey data from NYTS will be talked about in detail in the Methods section. 
@@ -84,7 +84,7 @@ Outliers with thus dataset was not a concern due to the survey designed to be a 
 ##### Data Leakage and Label Encoding
 With both the smoker_df and the non-smoker_df datasets cleaned, it was important to shuffle the rows post-merging of data, to prevent unseen training or testing data when building the model later on. After both the datasets were merged into a dataset saved as *'clean_data'*, it was crucial to split the data into **X** (*‘clean_predictors’*) and **Y** (*’clean_target’*) for encoding and resampling in later stages. The team then utilized vizualizations to explore the distributions of certain columns. 
 
-![Alt text](/images/data_distributions_plot.png)
+![Alt text](Images/data_distributions_plot.png)
 ***Figure 3.2.1**: The image shows the distribution of a few columns from the dataset. 
 
 However, data transformation seemed redundant due to the foresight of utilizing decision tree and tree ensemble algorithms as our predictive models. 
@@ -135,7 +135,7 @@ Tobacco_ETL.ipynb url -
 ##### UMAP, KernelPCA and Clustering
 The transformation of the dataset to one-hot encoded data allowed the team to begin exploring various number of components to reduce dimensions to. The algorithm, kernelPCA() from sklearn.decompose was utilized to plot a scree plot with no *n_components* argument. A scree plot essentially visualizes variance explained across components and the elbow method is typically used to decide the number of components the data should ideally be reduced to. The elbow method represents the point or the 'kink' in the curve where the variance among compnents starts to level off implying that any additional component will be of very little to no benefit, on the performance of the predictive model. 
 
-![Alt text](/images/scree_plot.png)
+![Alt text](Images/scree_plot.png)
 ***Figure 3.2.2**: This image shows the variance explained across 166 components from the **one hot encoded data**.* 
 
 Since the 'elbow' was not clear in the scree plot, and due to the nature of redesigning the NYTS survey, the team decided to abandon the vision of dimensionality reduction for predictive modeling. With respect to redesigning the survey, in order to understand which questions have been grouped or binned together, it would required extensive analysis across 166 components. However, each column/ feature in the one hot encoded data, is an answer from each survey question with the first answer dropped to prevent multi-colinearity. Therefore, aggregating features together in different bins could prove to be confusing and detrimental to the credibility of the reduced dataset. The kernelPCA() analysis can be referred to in the ***Dimensionality Reduction Section in the Jupyter Notebook linked below:*** 
@@ -151,7 +151,7 @@ ML_Project_Clustering.ipynb url -
 ###### Clustering Results
 The plot of output variables with reduced data demonstrated how intermixed the smoker and non-smoker outputs are. Half of the plot appears to be exclusively smoker, while the other seems to be a split distribution between smoker and non-smoker data. This preliminary visual analysis shows clustering may not be efficient for handling this data, since the divisions are not discrete. **Hierarchal clustering methods** *(HAC and HDBscan)* produced too many clusters (n = 5000 and 1800, respectively) to be relevant or useful for analysis. Although k-means can be set to predict a discrete number of clusters (n = 2), it experienced difficulty finding correct centroids. DBScan was the best fit for the data distribution, likely splitting when smoker data started to be in higher proportion than non-smoker data. However, due to the distribution of the data, other models will likely be better suited to fitting the data than clustering.
 
-![Alt text](/images/clustering_visuals.png)
+![Alt text](Images/clustering_visuals.png)
 ***Figure 4.1**: The image shows the various clustering visuals plotted to show the structure of the **one hot encoded data**.*
 
 The clustering code chunks can be referenced to in the *** Jupyter Notebook linked below:***
@@ -160,7 +160,7 @@ ML_Project_Clustering.ipynb url -
 ##### Feature Importance
 Since dimensionality reduction was not an ideal technique to understand the significance of each question, in order to further reduce the space of the data, the team incorporated RandomForest's Feature Importance method. **Label Encoded data was utilized for Feature Importeance analysis**. This provided the team with interesting insight into the influence of certain questions on the outcome. 
 
-![Alt text](/images/feature_importance.png)
+![Alt text](Images/feature_importance.png)
 ***Figure 4.2**: The image shows the importance of each feature on the outcome of a participant's smoking status, ranked from most important to least important.* 
 
 It can be observed that the most important feature only has an importance of 0.12 followed by a series of socio-economic features. It can also be seen how various races have slightly different importance to the outcome of a participant's smoking status. However, those features seem to have extremely low importance, making the team question the influence those features truly have on the smoking status of a participant. Despite gathering interesting information on each feature from the label encoded data, due to an inconclusive insight from the feature importance plot, the team pursued Permutation Feature Importance to understand how the absence of each feature would result in drop in cross-validation score with n_folds at 3. This can be referred to in the ***Model Building Section in the Jupyter Notebook linked below:*** 
