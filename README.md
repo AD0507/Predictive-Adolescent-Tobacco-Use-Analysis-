@@ -9,7 +9,6 @@ Dana Adcock - (danaadcock)
 
 Arunava Das - (AD0507)
 
-Rajat Rohilla - (Rajat-Rohilla)
 
 ## 1. Introduction
 Tobacco consumption among underage individuals remains a significant public health concern globally. Despite stringent regulations and public awareness campaigns, a considerable number of adolescents continue to experiment with tobacco products, including cigarettes and smokeless tobacco. Studies indicate that early exposure to nicotine can lead to long-term addiction, and those who begin smoking at a young age are more likely to continue into adulthood. Environmental, social, and economic factors also play a critical role in influencing an adolescent's decision to start using tobacco.
